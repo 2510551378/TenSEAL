@@ -641,4 +641,15 @@ shared_ptr<CKKSVector> CKKSVector::deepcopy() const {
     return CKKSVector::Create(ctx, vec);
 }
 
+shared_ptr<CKKSVector> CKKSVector::rotate(int steps) {
+    return this->rotate_inplace(steps);
+}
+
+shared_ptr<CKKSVector> CKKSVector::rotate_inplace(int steps) {
+    auto galois_keys = this->tenseal_context()->galois_keys();
+    this->tenseal_context()->evaluator->rotate_vector_inplace(this->_ciphertexts[0], steps, *galois_keys);
+    return shared_from_this();
+}
+
+
 }  // namespace tenseal
