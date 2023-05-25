@@ -494,6 +494,7 @@ void bind_ckks_vector(py::module &m) {
         .def("serialize",
              [](shared_ptr<CKKSVector> obj) { return py::bytes(obj->save()); })
         .def("copy", &CKKSVector::deepcopy)
+        .def("low_copy", &CKKSVector::copy)
         .def("__copy__",
              [](shared_ptr<CKKSVector> obj) { return obj->deepcopy(); })
         .def("__deepcopy__", [](shared_ptr<CKKSVector> obj,

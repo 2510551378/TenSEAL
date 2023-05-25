@@ -23,6 +23,9 @@ class AbstractTensor(ABC):
 
     def __copy__(self):
         return self.copy()
+    
+    def low_copy(self):
+        return self._wrap(data=self.data.low_copy())
 
     def context(self) -> "ts.Context":
         """Get the context linked to this tensor"""
