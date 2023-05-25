@@ -458,6 +458,43 @@ shared_ptr<CKKSVector> CKKSVector::conv2d_im2col_inplace(
     return shared_from_this();
 }
 
+vector<vector<double>> get_avgpool_matirx(const size_t windowsize, const size_t kernel_size)
+{
+    const int column = (windowsize/2)*(windowsize/2);
+    const int row = windowsize*windowsize;
+    size_t flage = 0;
+    vector<vector<double> > new_matirx (row, vector<double>(column, 0));
+    for(size_t i = 0 ;i < row ; i = i + windowsize*2)
+        for(size_t j = i ; j < i + windowsize ; j = j + kernel_size)
+        {
+            new_matirx[j][flage] = 1;
+            flage = flage+1;
+        }
+    return new_matirx;
+}
+    
+shared_ptr<CKKSVector> CKKSVector::avgpool2d_inplace(
+    const size_t windows_size, const size_t kernel_size) {
+    if (windows_size == 0) {
+        throw invalid_argument("windows_size can't be zero");
+    }
+    if (kernel_size == 0) {
+        throw invalid_argument("kernel_size can't be zero");
+    }
+    vector<vector<double>>  matrix = get_avgpool_matirx(windows_size,kernel_size);
+    size_t math_windowsize = windows_size;
+    double split_number = 1/((double)(kernel_size * kernel_size));
+    for(size_t i = 0 ; i < 2 ;i++){
+        auto unrotate_vector = this->copy();
+        this->rotate(math_windowsize);
+        this->add_inplace(unrotate_vector);
+        math_windowsize = 1;
+    }
+    this->matmul_plain_inplace(PlainTensor(matrix));
+    this->mul_plain_inplace(split_number);
+    return shared_from_this();
+}
+
 shared_ptr<CKKSVector> CKKSVector::enc_matmul_plain_inplace(
     const CKKSVector::plain_t& plain_vec, const size_t rows_nb) {
     if (plain_vec.empty()) {

@@ -397,6 +397,7 @@ void bind_ckks_vector(py::module &m) {
                 const vector<vector<double>> &matrix, const size_t windows_nb) {
                  return obj->conv2d_im2col_inplace(matrix, windows_nb);
              })
+        .def("avgpool2d",&CKKSVector::avgpool2d_inplace)
         .def("enc_matmul_plain",
              [](shared_ptr<CKKSVector> obj, const vector<double> &matrix,
                 size_t row_size) {

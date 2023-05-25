@@ -102,6 +102,10 @@ class CKKSVector
      */
     encrypted_t conv2d_im2col_inplace(const plain_t& kernel,
                                       const size_t windows_nb) override;
+    /*
+    * avgpool2d
+    */
+    encrypted_t avgpool2d_inplace(const size_t windows_size,const size_t kernel_size);
     /**
      * Replicate the first slot of a ciphertext n times. Requires a
      *multiplication.

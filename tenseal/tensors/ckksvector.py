@@ -190,6 +190,12 @@ class CKKSVector(AbstractTensor):
         other = self._conv2d_im2col(other)
         self.data.conv2d_im2col_(other, windows_nb)
         return self
+    
+    def avgpool2d(self, windows_size, kernel_size) -> "CKKSVector":
+        if windows_size == 0 or kernel_size == 0:
+            raise ValueError("windows_size and kernel_size can not be zero")
+        self.data.avgpool2d(windows_size , kernel_size)
+        return self
 
     @classmethod
     def _enc_matmul_plain(self, other):
